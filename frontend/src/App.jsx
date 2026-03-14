@@ -28,7 +28,8 @@ export default function App() {
       setError("");
 
       try {
-        const response = await fetch(`/api/jobs?type=${selected}`, {
+        const apiBase = import.meta.env.VITE_API_URL || "";
+        const response = await fetch(`${apiBase}/api/jobs?type=${selected}`, {
           signal: controller.signal,
         });
 
