@@ -8,7 +8,8 @@ const PORT = process.env.PORT || 3000;
 
 // Ruxsat berilgan originlar ro‘yxati
 const allowedOrigins = [
-  "http://localhost:3000", // local development
+  "http://localhost:5173", // Vite local dev
+  "http://localhost:3000", // optional local proxy/dev
   "https://javohirweb-scraping.vercel.app", // Vercel frontend
 ];
 
