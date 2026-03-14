@@ -28,7 +28,12 @@ export default function App() {
       setError("");
 
       try {
-        const apiBase = import.meta.env.VITE_API_URL || "";
+        const apiBaseRaw = import.meta.env.VITE_API_URL || "";
+        const apiBase = apiBaseRaw.replace(/\/+$/, "");
+        if (!apiBase && window.location.hostname !== "localhost") {
+          throw new Error("Backend URL is not configured.");
+        }
+
         const response = await fetch(`${apiBase}/api/jobs?type=${selected}`, {
           signal: controller.signal,
         });
