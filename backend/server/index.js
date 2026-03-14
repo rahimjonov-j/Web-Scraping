@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 const allowedOrigins = [
   "http://localhost:5173", // Vite local dev
   "http://localhost:3000", // optional local proxy/dev
-  "https://javohirweb-scraping.vercel.app", // Vercel frontend
+  "https://web-scraping-hh.vercel.app", // Vercel frontend
 ];
 
 app.use(
