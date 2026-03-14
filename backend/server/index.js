@@ -1,5 +1,4 @@
 import express from "express";
-import cors from "cors";
 import jobsRouter from "./routes/jobs.js";
 import { getBrowser } from "./scraper/browser.js";
 
@@ -7,26 +6,35 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Ruxsat berilgan originlar ro‘yxati
-const allowedOrigins = [
+const allowedOrigins = new Set([
   "http://localhost:5173", // Vite local dev
   "http://localhost:3000", // optional local proxy/dev
   "https://web-scraping-hh.vercel.app", // Vercel frontend
-];
+]);
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // origin null bo‘lishi mumkin (postman yoki server-to-server request)
-      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("CORS policy: origin not allowed"));
-      }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // cookie yoki authorization header uchun
-  }),
-);
+// CORS headerlarini hamma javobga qo'yish (xatoliklarda ham)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,POST,PUT,DELETE,OPTIONS",
+    );
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
+  }
+
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(204);
+  }
+
+  next();
+});
 app.use("/api", jobsRouter);
 
 app.get("/", (_req, res) => {
